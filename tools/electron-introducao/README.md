@@ -27,3 +27,9 @@ Essa linha faz o Electron abrir um processo separado para renderizar o conteúdo
 ## Comunicação entre os processos
 
 O script de preload atua como uma ponte segura entre o main e o renderer, permitindo expor funções controladas do Node.js ao código da interface
+
+Abaixo uma explicação de como a janela principal da aplicação consegue acessar, por exemplo, a versão do Node.js do processo principal
+
+1. `preload.js` empacota um objeto com a saída de funções do Node.js (obter versões do node, chrome e node), e o expõe
+2. `index.js` carrega o script de preload
+3. `renderer.js` acessa o objeto e renderiza suas saídas em um elemento HTML de parágrafo
