@@ -33,3 +33,27 @@ Abaixo uma explicação de como a janela principal da aplicação consegue acess
 1. `preload.js` empacota um objeto com a saída de funções do Node.js (obter versões do node, chrome e node), e o expõe
 2. `index.js` carrega o script de preload
 3. `renderer.js` acessa o objeto e renderiza suas saídas em um elemento HTML de parágrafo
+
+### IPC
+
+O Electron provê módulos IPC para enviar mensagens entre o processo principal e o renderizador
+
+Para enviar uma mensagem da sua página web para o processo principal, você pode configurar um manipulador no processo principal usando ipcMain.handle e, em seguida, expor uma função que chame ipcRenderer.invoke para acionar esse manipulador no seu script preload.
+
+```javascript
+// index.js
+app.whenReady().then(() => {
+    ipcMain.handle('ping', () => 'pong')
+    // ..
+})
+```
+
+```javascript
+// preload.js
+const { ipcRenderer, contextBridge } = require('electron')
+contextBridge.exposeInMainWorld('versions', {
+    // ...
+    ping: () => ipcRenderer.invoke('ping'),
+})
+```
+
